@@ -133,11 +133,14 @@ form. This is most easily accomplished by using
         'tags': [
             {'name': validators.ensure_str}
         ],
-    }, post_validator=validators.key_matcher(
-        "password", "password2", "Please ensure the two passwords match"))
+    })
+    schema.validator = validators.chain(
+        schema.validator,  # The default is validators.all_children
+        validators.key_matcher("password", "password2",
+                               "Please ensure the two passwords match"))
 
     schema['tags'].validator = validators.chain(
-          schema['tags'].validator,  # The default is validators.all_children
+          schema['tags'].validator,
           validators.limit_length(min=1, max=8)
     )
 

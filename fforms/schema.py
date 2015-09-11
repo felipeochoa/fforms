@@ -140,8 +140,18 @@ class LeafSchema(Schema):
         return self._run_validator(data)
 
 
-def make_from_literal(literal, post_validator=None, pre_validator=None, name=""):
-    "Converts a literally specified schema into a Schema."
+def make_from_literal(literal, name=""):
+    """
+    Converts a literally specified schema into a Schema.
+
+    This function traverses a set of nested dicitonaries and lists to create
+    a schema tree made up of MapSchema, SequenceSchema, and LeafSchema
+    objects. dicts are turned into MapSchema, lists are turned into
+    SequenceSchema, and other values are turned into LeafSchema. For
+    LeafSchema, the value given is assumed to be a validator, which is
+    attached to the node.
+
+    """
     if isinstance(literal, dict):
         children = {key: make_from_literal(value, name=key)
                     for key, value in literal.items()}
@@ -154,7 +164,4 @@ def make_from_literal(literal, post_validator=None, pre_validator=None, name="")
     else:  # Otherwise it should be a validator!
         schema = LeafSchema(name)
         schema.validator = literal
-    if post_validator or pre_validator:
-        vals = filter(None, (pre_validator, schema.validator, post_validator))
-        schema.validator = validators.chain(*vals)
     return schema
