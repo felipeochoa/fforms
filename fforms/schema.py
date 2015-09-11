@@ -117,9 +117,6 @@ class SequenceSchema(Schema):
         self.child = child
         self.validator = validators.all_children
 
-    def __getitem__(self, child_name):
-        return self.children[child_name]
-
     def validate(self, data):
         if data is None:
             data = []
