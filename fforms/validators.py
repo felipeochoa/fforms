@@ -193,3 +193,41 @@ def as_int(data):
         return int(data)
     except (TypeError, ValueError):
         raise ValidationError("{field.name} must be a whole number", data)
+
+
+def as_date(format_):
+    "Try to parse a date from the given string."
+    from datetime import datetime
+    def date_from_str_validator(data):
+        try:
+            datetime.strptime(data, format_).date()
+        except (TypeError, ValueError):
+            raise ValidationError(DeferredMessage(
+                "Date must be in {format_} format", format_=format_))
+    date_from_str_validator.__doc__ = \
+      "Parse a %s-formatted string into a Date" % format_
+    return date_from_str_validator
+
+
+def as_decimal(data):
+    "Extract a decimal from the data."
+    import decimal
+    try:
+        return decimal.Decimal(data)
+    except (TypeError, ValueError):
+        raise ValidationError(DeferredMessage(
+            "{field.name} must be a decimal number"))
+
+
+def as_instance(class_sig, msg=None):
+    "Ensure the data given is of the given class."
+    msg = d_msg(msg, "{field.name} must be a {class_sig}",
+                class_sig=class_sig)
+    def as_instance_validator(data):
+        if not isinstance(data, class_sig):
+            raise ValidationError(msg, data)
+        return data
+    as_instance_validator.__doc__ = \
+      "Ensure the data is an instance of %r" % class_sig
+    return as_instance_validator
+
