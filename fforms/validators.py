@@ -95,11 +95,11 @@ def limit_length(min=0, max=None, msg=None):
     if max is None:
         msg = d_msg(msg, "The length of {field.name} must be at least {min}",
                     min=min)
-        return from_bool_func(lambda data: min < len(data), msg)
+        return from_bool_func(lambda data: min <= len(data), msg)
     msg = d_msg(msg,
                 "The length of {field.name} must be between {min} and {max}",
                 min=min, max=max)
-    return from_bool_func(lambda data: min < len(data) < max, msg)
+    return from_bool_func(lambda data: min <= len(data) <= max, msg)
 
 
 non_empty = from_bool_func(lambda data: bool(data),
