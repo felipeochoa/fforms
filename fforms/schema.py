@@ -1,4 +1,5 @@
 
+import types
 from . import validators
 
 
@@ -80,7 +81,7 @@ class MapSchema(Schema):
 
     def __init__(self, children, name=""):
         super().__init__(children.values(), name)
-        self._child_by_name = children
+        self._child_by_name = types.MappingProxyType(children.copy())
         self.validator = validators.all_children
 
     def __getitem__(self, child_name):

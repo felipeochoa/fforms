@@ -69,6 +69,14 @@ class TestMapSchema(unittest.TestCase):
         self.assertIs(schema.pre_processor, fforms.validators.noop)
         self.assertEqual(schema.name, "NaMe")
 
+    def test_immutable(self):
+        children = {'a': 1, 'b': 2, 'c': 3}
+        schema = fforms.schema.MapSchema(children)
+        with self.assertRaises(TypeError):
+            schema._child_by_name['a'] = 2
+        children['a'] = 2
+        self.assertNotEqual(schema['a'], 2)
+
     def test_getitem(self):
         children = {'a': 1, 'b': 2, 'c': 3}
         schema = fforms.schema.MapSchema(children, "NaMe")
