@@ -1,7 +1,7 @@
 
+import copy
 import types
 from . import validators
-
 
 class Schema:
 
@@ -150,10 +150,15 @@ def make_from_literal(literal, name=""):
     objects. dicts are turned into MapSchema, lists are turned into
     SequenceSchema, and other values are turned into LeafSchema. For
     LeafSchema, the value given is assumed to be a validator, which is
-    attached to the node.
+    attached to the node. If the literal includes any Schema instances, they
+    are copied, renamed and included in the hierarchy. This allows
+    inheritance/composition of schema.
 
     """
-    if isinstance(literal, dict):
+    if isinstance(literal, Schema):
+        schema = copy.copy(literal)
+        schema.name = name
+    elif isinstance(literal, dict):
         children = {key: make_from_literal(value, name=key)
                     for key, value in literal.items()}
         schema = MapSchema(children, name)

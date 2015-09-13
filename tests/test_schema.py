@@ -211,12 +211,25 @@ class TestMakeFromLiteral(unittest.TestCase):
         self.assertEqual(schema.name, "")
         self.assertIs(schema.validator, val)
 
+    def test_schema(self):
+        for subschema in [fforms.schema.Schema(list('abc'), "testing"),
+                          fforms.schema.MapSchema({'a': 1}, "map"),
+                          fforms.schema.SequenceSchema(123456, "sequence"),
+                          fforms.schema.LeafSchema("leaf")]:
+            subschema.validator = lambda x: x
+            schema = fforms.schema.make_from_literal(subschema)
+            self.assertIs(schema.children, subschema.children)
+            self.assertIs(schema.validator, subschema.validator)
+            self.assertIsNot(schema.name, subschema.name)
+
     def test_integrated(self):
         f1v = fforms.validators.from_bool_func(lambda x: x == '1', "")
         zip_code_v = fforms.validators.chain(
             fforms.validators.from_regex("^[0-9]+$"),
             fforms.validators.limit_length(min=5, max=5))
         tel_v = fforms.validators.from_regex("^[0-9]+$")
+        subschema = fforms.schema.LeafSchema("leaf")
+        subschema.validator = lambda x: x
         schema = fforms.schema.make_from_literal({
             'field1': f1v,
             'emails': [fforms.validators.email],
@@ -225,10 +238,11 @@ class TestMakeFromLiteral(unittest.TestCase):
                 'zip_code': zip_code_v,
                 'telephones': [tel_v],
             },
+            'leaves': [subschema],
         })
         self.assertIsInstance(schema, fforms.schema.MapSchema)
         self.assertEqual(set(s.name for s in schema),
-                         {'field1', 'emails', 'address'})
+                         {'field1', 'emails', 'address', 'leaves'})
 
         self.assertIsInstance(schema['field1'], fforms.schema.LeafSchema)
         self.assertIs(schema['field1'].validator, f1v)
@@ -255,3 +269,8 @@ class TestMakeFromLiteral(unittest.TestCase):
         self.assertIsInstance(schema['address']['telephones'].child,
                               fforms.schema.LeafSchema)
         self.assertIs(schema['address']['telephones'].child.validator, tel_v)
+
+        self.assertIsInstance(schema['leaves'], fforms.schema.SequenceSchema)
+        self.assertIs(schema['leaves'].validator, fforms.validators.all_children)
+        self.assertIsInstance(schema['leaves'].child, fforms.schema.LeafSchema)
+        self.assertIs(schema['leaves'].child.validator, subschema.validator)
