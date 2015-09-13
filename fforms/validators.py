@@ -81,14 +81,6 @@ def from_bool_func(func, msg):
     return bool_validator
 
 
-def ensure_str(data, msg=None):
-    "Ensure that the data is a string."
-    msg = d_msg(msg, "{field.name} must be a string")
-    if not isinstance(data, str):
-        raise ValidationError(msg, data)
-    return data
-
-
 def chain(*validators):
     "Chain a series of validators, piping the results from one into another."
     def chained_validator(data):
@@ -97,18 +89,6 @@ def chain(*validators):
         return data
     return chained_validator
 
-
-def from_regex(pattern, msg=None):
-    "Create a validator that ensures the data contains a given pattern."
-    regex = re.compile(pattern)
-    msg = d_msg(msg, '{field.name} does not match {pattern}', pattern=pattern)
-    return chain(ensure_str, from_bool_func(regex.search, msg))
-
-
-email = from_regex("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+"
-                   "@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
-                   "(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
-                   "Invalid email address")
 
 def limit_length(min=0, max=None, msg=None):
     "Create a validator to ensure the length of data is between min and max."
@@ -235,3 +215,18 @@ def as_instance(class_sig, msg=None):
       "Ensure the data is an instance of %r" % class_sig
     return as_instance_validator
 
+
+ensure_str = as_instance(str)
+
+
+def from_regex(pattern, msg=None):
+    "Create a validator that ensures the data contains a given pattern."
+    regex = re.compile(pattern)
+    msg = d_msg(msg, '{field.name} does not match {pattern}', pattern=pattern)
+    return chain(ensure_str, from_bool_func(regex.search, msg))
+
+
+email = from_regex("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+"
+                   "@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
+                   "(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+                   "Invalid email address")
