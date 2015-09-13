@@ -174,6 +174,11 @@ ensure_parent = from_bool_func(
     "{field.name} must be a container")
 
 
+def fail_if_error(child_value, msg="", data=None):
+    "Check a child's value and raise ValidationError if it's an error."
+    if isinstance(child_value, ValidationError):
+        raise ValidationError(msg, data)
+
 def all_children(data):
     "Ensures all the children are none-errors."
     ensure_parent(data)
@@ -182,8 +187,7 @@ def all_children(data):
     elif isinstance(data, (list, tuple)):
         children = iter(data)
     for child in children:
-        if isinstance(child, ValidationError):
-            raise ValidationError("", data)
+        fail_if_error(child, "", data)
     return data
 
 
