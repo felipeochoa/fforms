@@ -135,20 +135,6 @@ def limit_chars(char_class, msg=None):
     return chain(ensure_str, limit_chars_validator)
 
 
-def negate(validator, msg):
-    "Create the opposite validator to the one given."
-    if not isinstance(msg, DeferredMessage):
-        msg = DeferredMessage(msg)
-    def negated_validator(data):
-        try:
-            validator(data)
-        except ValidationError:
-            return data
-        else:
-            raise ValidationError(msg, data)
-    return negated_validator
-
-
 ensure_parent = from_bool_func(
     lambda data: isinstance(data, (dict, list, tuple)),
     "{field.name} must be a container")
