@@ -184,9 +184,10 @@ def as_decimal(data):
     import decimal
     try:
         return decimal.Decimal(data)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, decimal.InvalidOperation):
         raise ValidationError(DeferredMessage(
-            "{field.name} must be a decimal number"))
+            "{field.name} must be a decimal number"), data)
+    return data
 
 
 def as_instance(class_sig, msg=None):
