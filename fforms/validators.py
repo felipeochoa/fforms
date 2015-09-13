@@ -126,7 +126,7 @@ def limit_chars(char_class, msg=None):
     pattern = "[^%s]" % char_class.replace("]", "\\]")
     regex = re.compile(pattern)
     def limit_chars_validator(data):
-        if not pattern.search(data):
+        if not regex.search(data):
             return data
         invalid = frozenset(regex.findall(data))
         inner_msg = d_msg(msg, "Invalid characters: {invalid_chars}",
