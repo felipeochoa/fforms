@@ -165,15 +165,16 @@ def as_int(data):
         raise ValidationError("{field.name} must be a whole number", data)
 
 
-def as_date(format_):
+def as_date(format_, msg=None):
     "Try to parse a date from the given string."
     from datetime import datetime
+    msg = d_msg(msg, "Date must be in {format_} format", format_=format_)
     def date_from_str_validator(data):
         try:
-            datetime.strptime(data, format_).date()
+            return datetime.strptime(data, format_).date()
         except (TypeError, ValueError):
-            raise ValidationError(DeferredMessage(
-                "Date must be in {format_} format", format_=format_))
+            raise ValidationError(msg, data)
+        return data
     date_from_str_validator.__doc__ = \
       "Parse a %s-formatted string into a Date" % format_
     return date_from_str_validator
