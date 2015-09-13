@@ -102,8 +102,8 @@ def limit_length(min=0, max=None, msg=None):
     return from_bool_func(lambda data: min <= len(data) <= max, msg)
 
 
-non_empty = from_bool_func(lambda data: bool(data),
-                           "{field.name} cannot be empty")
+not_none = from_bool_func(lambda x: x is not None,
+                          "{field.name} is required.")
 
 
 def key_matcher(key1, key2, msg=None):
