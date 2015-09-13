@@ -191,20 +191,20 @@ def as_decimal(data):
     return data
 
 
-def as_instance(class_sig, msg=None):
+def ensure_instance(class_sig, msg=None):
     "Ensure the data given is of the given class."
     msg = d_msg(msg, "{field.name} must be a {class_sig}",
                 class_sig=class_sig)
-    def as_instance_validator(data):
+    def ensure_instance_validator(data):
         if not isinstance(data, class_sig):
             raise ValidationError(msg, data)
         return data
-    as_instance_validator.__doc__ = \
-      "Ensure the data is an instance of %r" % class_sig
-    return as_instance_validator
+    ensure_instance_validator.__doc__ = \
+      "Ensure the data is an instance of %r" % (class_sig,)
+    return ensure_instance_validator
 
 
-ensure_str = as_instance(str)
+ensure_str = ensure_instance(str)
 
 
 def from_regex(pattern, msg=None):
