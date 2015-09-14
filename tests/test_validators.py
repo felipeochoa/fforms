@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 "Unit testing of fforms.validators."
 
 from decimal import Decimal
@@ -355,6 +356,7 @@ class TestValidators(unittest.TestCase):
             ("firstname-lastname@domain.com", True),
             ("a@t.co", True),
             ("email@domain.web", True),
+            ("user@xn--alliancefranaise-npb.nu", True),
             ######################################################
             ("plainaddress", False),
             ("#@%^%#$@#$@#.com", False),
@@ -370,6 +372,53 @@ class TestValidators(unittest.TestCase):
             ("email@domain", False),
             ("email@-domain.com", False),
             ("email@domain..com", False),
+            ('email@here.com', True),
+            ('weirder-email@here.and.there.com', True),
+            ('email@[127.0.0.1]', True),
+            ('email@[2001:dB8::1]', True),
+            ('email@[2001:dB8:0:0:0:0:0:1]', True),
+            ('email@[::fffF:127.0.0.1]', True),
+            ('example@valid-----hyphens.com', True),
+            ('example@valid-with-hyphens.com', True),
+            ('test@domain.with.idn.tld.उदाहरण.परीक्षा', True),
+            ('email@localhost', False),
+            ('"test@test"@example.com', True),
+            ('example@atm.%s' % ('a' * 63), True),
+            ('example@%s.atm' % ('a' * 63), True),
+            ('example@%s.%s.atm' % ('a' * 63, 'b' * 10), True),
+            ('example@atm.%s' % ('a' * 64), False),
+            ('example@%s.atm.%s' % ('b' * 64, 'a' * 63), False),
+            (None, False),
+            ('', False),
+            ('abc', False),
+            ('abc@', False),
+            ('abc@bar', False),
+            ('a @x.cz', False),
+            ('abc@.com', False),
+            ('something@@somewhere.com', False),
+            ('email@127.0.0.1', False),
+            ('email@[127.0.0.256]', False),
+            ('email@[2001:db8::12345]', False),
+            ('email@[2001:db8:0:0:0:0:1]', False),
+            ('email@[::ffff:127.0.0.256]', False),
+            ('example@invalid-.com', False),
+            ('example@-invalid.com', False),
+            ('example@invalid.com-', False),
+            ('example@inv-.alid-.com', False),
+            ('example@inv-.-alid.com', False),
+            ('test@example.com\n\n<script src="x.js">', False),
+            # Quoted-string format (CR not allowed)
+            ('"\\\011"@here.com', True),
+            ('"\\\012"@here.com', False),
+            ('trailingdot@shouldfail.com.', False),
+            # Max length of domain name labels is 63 characters per RFC 1034.
+            ('a@%s.us' % ('a' * 63), True),
+            ('a@%s.us' % ('a' * 64), False),
+            # Trailing newlines in username or domain not allowed
+            ('a@b.com\n', False),
+            ('a\n@b.com', False),
+            ('"test@test"\n@example.com', False),
+            ('a@[127.0.0.1]\n', False),
         ]
         custom_email = fforms.validators.EmailValidator("custom_message")
         for data, is_valid in cases:

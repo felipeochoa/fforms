@@ -1,5 +1,6 @@
 
 import re
+import socket  # for IP validation only
 
 
 class ValidationError(Exception):
@@ -258,17 +259,16 @@ class EmailValidator(object):
         r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"\Z)',  # quoted-string
         re.IGNORECASE)
     domain_regex = re.compile(
-        # max length of the domain is 249: 254 (max email length) minus one
-        # period, two characters for the TLD, @ sign, & one character before @.
-        r'(?:[A-Z0-9](?:[A-Z0-9-]{0,247}[A-Z0-9])?\.)+(?:[A-Z]{2,6}|[A-Z0-9-]{2,}(?<!-))\Z',
+        # max length for domain name labels is 63 characters per RFC 1034
+        r'((?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+)(?:[A-Z0-9-]{2,63}(?<!-))\Z',
         re.IGNORECASE)
     literal_regex = re.compile(
         # literal form, ipv4 or ipv6 address (SMTP 4.1.3)
         r'\[([A-f0-9:\.]+)\]\Z',
         re.IGNORECASE)
-    ip_v46_regex = re.compile(
+    ip_v4_regex = re.compile(
         r'^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\Z')
-    domain_whitelist = ['localhost']
+    domain_whitelist = []
 
     def __init__(self, message=None):
         if message is not None:
@@ -292,7 +292,7 @@ class EmailValidator(object):
             try:
                 domain_part = domain_part.encode('idna').decode('ascii')
                 if self.validate_domain_part(domain_part):
-                    return
+                    return value
             except UnicodeError:
                 pass
             raise ValidationError(self.message, value)
@@ -305,9 +305,19 @@ class EmailValidator(object):
         literal_match = self.literal_regex.match(domain_part)
         if literal_match:
             ip_address = literal_match.group(1)
-            if self.ip_v46_regex.match(ip_address):
+            if self.ip_v4_regex.match(ip_address):
                 return True
+            return self.is_valid_ipv6_address(ip_address)
         return False
+
+    @staticmethod
+    def is_valid_ipv6_address(address):
+        "Verify whether a string is a valid ipv6 address."
+        try:
+            socket.inet_pton(socket.AF_INET6, address)
+        except socket.error:  # not a valid address
+            return False
+        return True
 
 
 email = EmailValidator()
