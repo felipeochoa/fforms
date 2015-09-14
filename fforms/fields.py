@@ -17,8 +17,9 @@ class BoundField:
 
     BoundFields have the following attributes:
 
-    * raw_data: The unprocessed data fed to the field, if
-                any (defaults to None).
+    * raw_data: The data fed to the field, if any (defaults to None). Any
+                gaps in data are filled with `None`. This is the result of
+                calling schema.pre_processor() using the passed in data.
     * clean_data: The data after the field and its children have validated
                   all of the inputs. If there are errors validating this
                   field, clean_data is None. (Note that the converse is not
@@ -27,7 +28,7 @@ class BoundField:
     * errors: A list of error messages from errors in validating this
               field's input. Errors specific to a child field are not
               included in this list.
-    * name: The name of this field in its parent. self.parent[name] == self
+    * name: The name of this field in its parent. parent[self.name] == self
     * full_name: A dotted/coloned path from the root node to self. Colons are
                  used when the schema is a sequence, and dots are used when
                  the schema is a map.
