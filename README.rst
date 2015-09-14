@@ -17,8 +17,8 @@ Installation
 
 ``fforms`` is a pure Python package with no dependencies, so
 installing it should be very straightforward. I develop and test on
-3.4, and have configured Jenkins to test 3.3. Soon I'll be adding 3.5
-as well.
+3.4, and soon I'll be adding 3.5 as well. Python 3.3 should work 99%
+correctly. [#3.3]
 
 1. **Option A**: ``pip install fforms``
 2. **Option B**: download the source code, change into the working
@@ -325,3 +325,6 @@ by passed to other parts of your application.
    :target: https://travis-ci.org/felipeochoa/fforms
 .. |Coverage Status| image:: https://coveralls.io/repos/felipeochoa/fforms/badge.svg
    :target: https://coveralls.io/r/felipeochoa/fforms
+
+.. [#3.3] Unless you run into email addresses using IPv6 domain names
+          on Windows.
