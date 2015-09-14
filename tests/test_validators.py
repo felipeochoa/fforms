@@ -6,21 +6,8 @@ from unittest import mock
 
 import fforms.validators
 
-def _patched_callable(obj):
-    "Monkeypatch to allow automocking of classmethods and staticmethods."
-    # See https://code.google.com/p/mock/issues/detail?id=241 and
-    # http://bugs.python.org/issue23078 for the relevant bugs this
-    # monkeypatch fixes
-    if isinstance(obj, type):
-        return True
-    if getattr(obj, '__call__', None) is not None:
-        return True
-    if (isinstance(obj, (staticmethod, classmethod)) and
-            mock._callable(obj.__func__)):  #pylint: disable=W0212
-        return True
-    return False
-
-mock._callable = _patched_callable  #pylint: disable=W0212
+from fforms import _patch_mock_callable
+_patch_mock_callable()
 
 
 class TestValidationError(unittest.TestCase):

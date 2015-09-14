@@ -120,3 +120,25 @@ def bind_dotted(schema, data, data2=None):
         data.update(data2)
     data = expand_dots({key: val for key, val in data.items() if val != ""})
     return schema.bind(BoundField, data)
+
+
+def _patch_mock_callable():
+    "Monkeypatch to allow automocking of classmethods and staticmethods."
+    from unittest import mock
+    if getattr(mock._callable, "fforms_patched", False):  #pylint: disable=W0212
+        return
+    def _patched_callable(obj):
+        "Monkey patched version of mock._callable."
+        # See https://code.google.com/p/mock/issues/detail?id=241 and
+        # http://bugs.python.org/issue23078 for the relevant bugs this
+        # monkeypatch fixes
+        if isinstance(obj, type):
+            return True
+        if getattr(obj, '__call__', None) is not None:
+            return True
+        if (isinstance(obj, (staticmethod, classmethod)) and
+                mock._callable(obj.__func__)):  #pylint: disable=W0212
+            return True
+        return False
+    _patched_callable.fforms_patched = True
+    mock._callable = _patched_callable  #pylint: disable=W0212
