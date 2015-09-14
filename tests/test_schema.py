@@ -213,6 +213,11 @@ class TestMakeFromLiteral(unittest.TestCase):
         self.assertEqual(schema.child.validator, 'child')
         self.assertEqual(schema.child.name, 0)
 
+    def test_list_multiple_children(self):
+        noop = fforms.validators.noop
+        self.assertRaises(ValueError,
+                          fforms.schema.make_from_literal, [noop, noop])
+
     def test_leaf(self):
         val = fforms.validators.from_bool_func(lambda x: x == "test", "Error")
         schema = fforms.schema.make_from_literal(val)
