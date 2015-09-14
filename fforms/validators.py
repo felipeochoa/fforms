@@ -11,7 +11,7 @@ class ValidationError(Exception):
     def __init__(self, message, clean_data):
         self.message = message
         self.clean_data = clean_data
-        super().__init__(message)
+        super().__init__(message, clean_data)
 
     def bind(self, bound_field):
         "Fill in error messages with the bound field info. Returns self."

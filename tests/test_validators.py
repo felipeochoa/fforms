@@ -21,7 +21,7 @@ class TestValidationError(unittest.TestCase):
         err = fforms.validators.ValidationError(msg, data)
         self.assertIs(err.message, msg)
         self.assertIs(err.clean_data, data)
-        self.assertEqual(err.args, (msg,))
+        self.assertEqual(err.args, (msg, data))
 
     def test_bind(self):
         msg = mock.MagicMock()
