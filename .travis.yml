@@ -1,0 +1,24 @@
+language: "python"
+
+python:
+  - "3.3"
+  - "3.4"
+
+install:
+  - pip install --upgrade pip
+  - pip install -e .
+  - pip install coveralls
+
+bundler_args: --retry 3
+
+env:
+  - TRAVIS=1
+
+script:
+  - coverage run --source fforms -m unittest discover tests
+
+after_success:
+  - coveralls
+
+after_failure:
+  - coveralls
