@@ -174,7 +174,6 @@ def as_date(format_, msg=None):
             return datetime.strptime(data, format_).date()
         except (TypeError, ValueError):
             raise ValidationError(msg, data)
-        return data
     date_from_str_validator.__doc__ = \
       "Parse a %s-formatted string into a Date" % format_
     return date_from_str_validator
@@ -188,7 +187,6 @@ def as_decimal(data):
     except (TypeError, ValueError, decimal.InvalidOperation):
         raise ValidationError(DeferredMessage(
             "{field.name} must be a decimal number"), data)
-    return data
 
 
 def ensure_instance(class_sig, msg=None):
