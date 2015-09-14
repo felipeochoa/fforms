@@ -42,6 +42,10 @@ class DeferredMessage:
         extra_kw.update(self.kwargs)
         return self.process_message(self.msg, extra_kw)
 
+    def __repr__(self):
+        return  "%s(%r, **%r)" % (self.__class__.__name__,
+                                  self.msg, self.kwargs)
+
 
 def d_msg(user_msg, default, **kwargs):
     """

@@ -3,6 +3,7 @@
 from decimal import Decimal
 import unittest
 from unittest import mock
+from ast import literal_eval
 
 import fforms.validators
 
@@ -41,6 +42,17 @@ class TestDeferredMessage(unittest.TestCase):
         dmsg = fforms.validators.DeferredMessage(msg, a=1, b=2)
         self.assertIs(dmsg.msg, msg)
         self.assertEqual(dmsg.kwargs, {'a': 1, 'b': 2})
+
+    def test_repr(self):
+        msg = mock.MagicMock()
+        dmsg = fforms.validators.DeferredMessage(msg)
+        self.assertEqual(repr(dmsg), "DeferredMessage(%r, **{})" % msg)
+        dmsg = fforms.validators.DeferredMessage(msg, a=1, b=2)
+        rep = repr(dmsg)
+        self.assertTrue(rep.startswith("DeferredMessage(%r, **{" % msg))
+        self.assertTrue(rep.endswith("})"))
+        dict_repr = rep[rep.find("{"):rep.find("}") + 1]
+        self.assertEqual(literal_eval(dict_repr), dict(a=1, b=2))
 
     @mock.patch.object(fforms.validators.DeferredMessage, "process_message",
                        autospec=True)
