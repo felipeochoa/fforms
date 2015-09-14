@@ -359,10 +359,15 @@ class TestValidators(unittest.TestCase):
             ("email@-domain.com", False),
             ("email@domain..com", False),
         ]
+        custom_email = fforms.validators.EmailValidator("custom_message")
         for data, is_valid in cases:
             if is_valid:
                 self.assertEqual(fforms.validators.email(data), data)
+                self.assertEqual(custom_email(data), data)
             else:
                 self.assertRaises(
                     fforms.validators.ValidationError,
                     fforms.validators.email, data)
+                with self.assertRaises(fforms.validators.ValidationError) as cm:
+                    custom_email(data)
+                self.assertEqual(cm.exception.message, "custom_message")

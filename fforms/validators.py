@@ -271,7 +271,8 @@ class EmailValidator(object):
             self.message = message
 
     def __call__(self, value):
-        ensure_str(value)
+        if not isinstance(value, str):
+            raise ValidationError(self.message, value)
 
         if not value or '@' not in value:
             raise ValidationError(self.message, value)
