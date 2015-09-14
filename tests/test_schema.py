@@ -53,6 +53,15 @@ class TestSchema(unittest.TestCase):
                               fforms.validators.ValidationError)
         schema.validator.assert_called_once_with(data)
 
+    def test_getitem(self):
+        schema = fforms.schema.Schema(('a', 'b', 'c'))
+        self.assertRaises(NotImplementedError, lambda: schema['a'])
+
+    def test_validate(self):
+        schema = fforms.schema.Schema(('a', 'b', 'c'))
+        self.assertRaises(NotImplementedError, schema.validate, 1)
+        self.assertRaises(NotImplementedError, schema.validate, None)
+
 
 class TestMapSchema(unittest.TestCase):
 
