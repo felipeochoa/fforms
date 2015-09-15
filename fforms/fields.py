@@ -10,7 +10,7 @@ class BoundField:
     __init__ params:
 
     * `schema`: The unbound Field creating this BoundField
-    * `parent_name`: A dotted path of names from the root to here
+    * `full_name`: A dotted path of names from the root to here
     * `data`: A serliazed representation of the data to be validated against
               the schema. AKA "cstruct"
 
@@ -25,10 +25,10 @@ class BoundField:
                   field, clean_data is None. (Note that the converse is not
                   True; clean_data may be None even though the field had no
                   errors)
-    * errors: A list of error messages from errors in validating this
-              field's input. Errors specific to a child field are not
-              included in this list.
     * name: The name of this field in its parent. parent[self.name] == self
+    * error: An error message generated while validating this field's input.
+             Errors specific to a child field are not included in the parent
+             message.
     * full_name: A dotted/coloned path from the root node to self. Colons are
                  used when the schema is a sequence, and dots are used when
                  the schema is a map.
