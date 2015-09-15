@@ -25,7 +25,6 @@ class BoundField:
                   field, clean_data is None. (Note that the converse is not
                   True; clean_data may be None even though the field had no
                   errors)
-    * name: The name of this field in its parent. parent[self.name] == self
     * error: An error message generated while validating this field's input.
              Errors specific to a child field are not included in the parent
              message.
@@ -37,7 +36,10 @@ class BoundField:
 
     def __init__(self, schema, data=None, full_name="", name=None):
         self.schema = schema
-        self.name = name if name is not None else schema.name
+        self._name = name if name is not None else schema.name
+        # _name should only be overriden for children of fields bound to
+        # SequenceSchema, where there isn't a 1-to-1 mapping of fields and
+        # schema
         self.full_name = full_name
         if schema.is_sequence:
             full_name += ":"
@@ -88,7 +90,7 @@ class BoundField:
         if data is None:
             return ret
         for child in self:
-            child._propagate_validation(data[child.name])
+            child._propagate_validation(data[child._name])
         return ret
 
     def __iter__(self):
