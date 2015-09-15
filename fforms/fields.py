@@ -41,33 +41,33 @@ class BoundField:
         # SequenceSchema, where there isn't a 1-to-1 mapping of fields and
         # schema
         self.full_name = full_name
-        if schema.is_sequence:
+        self.raw_data = schema.pre_processor(data)
+        self._children = self._make_children()
+        self.clean_data = None
+        self.error = None
+
+    def _make_children(self):
+        "Returns a list or dict with child fields mirroring the schema."
+        full_name = self.full_name
+        data = self.raw_data
+        if self.schema.is_sequence:
             full_name += ":"
-            child = schema.child
+            child = self.schema.child
             if data:
-                self._children = [
-                    self.__class__(child,
-                                   elem,
-                                   full_name + str(ix),
-                                   ix)
-                    for ix, elem in enumerate(data)
-                ]
+                return [self.__class__(child, elem, full_name + str(ix), ix)
+                        for ix, elem in enumerate(data)]
             else:
-                self._children = [
-                    self.__class__(child, None, full_name + "0")
-                ]
+                return [self.__class__(child, None, full_name + "0")]
         else:
             if full_name:
                 full_name += "."
-            self._children = {
+            return {
                 node.name: self.__class__(
-                    node, None if data is None else data.get(node.name),
+                    node,
+                    None if data is None else data.get(node.name),
                     full_name + node.name)
-                for node in schema
+                for node in self.schema
             }
-        self.clean_data = None
-        self.raw_data = schema.pre_processor(data)
-        self.error = None
 
     def __getitem__(self, name):
         return self._children[name]
