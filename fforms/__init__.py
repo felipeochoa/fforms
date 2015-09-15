@@ -122,7 +122,7 @@ def bind_dotted(schema, data, data2=None):
     return schema.bind(BoundField, data)
 
 
-def _patch_mock_callable():
+def _patch_mock_callable(): # pragma: nocover
     "Monkeypatch to allow automocking of classmethods and staticmethods."
     from unittest import mock
     if getattr(mock._callable, "fforms_patched", False):  #pylint: disable=W0212
