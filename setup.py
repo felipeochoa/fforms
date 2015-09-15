@@ -21,4 +21,5 @@ setup(
     ],
     keywords="forms form html",
     packages=["fforms"],
+    test_suite="tests",
 )
