@@ -75,6 +75,17 @@ def expand_dots(base_dict):
     Traceback (most recent call last):
       ...
     ValueError: 'a' specified as both naked and parent key
+    >>> expand_dots({})
+    {}
+    >>> from collections import OrderedDict
+    >>> expand_dots(OrderedDict([('head.a', 1), ('head:0', 2)]))
+    Traceback (most recent call last):
+      ...
+    ValueError: 'head' specified as both dict and list
+    >>> expand_dots(OrderedDict([('head:0', 1), ('head.a', 2)]))
+    Traceback (most recent call last):
+      ...
+    ValueError: 'head' specified as both dict and list
 
     """
     import re
