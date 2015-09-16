@@ -21,7 +21,7 @@ class TestBoundFieldCreation(unittest.TestCase):
         self.assertIs(field._children, _make_children.return_value)
         self.assertIs(field.schema, schema)
         self.assertEqual(field.full_name, "")
-        self.assertIs(field._name, schema.name)
+        self.assertIs(field.name, schema.name)
         self.assertIs(field.clean_data, None)
         self.assertIs(field.raw_data, schema.pre_processor.return_value)
         self.assertIs(field.error, None)
@@ -35,7 +35,7 @@ class TestBoundFieldCreation(unittest.TestCase):
         self.assertIs(field._children, _make_children.return_value)
         self.assertIs(field.schema, schema)
         self.assertEqual(field.full_name, "full_name")
-        self.assertIs(field._name, 5)
+        self.assertIs(field.name, 5)
         self.assertIs(field.clean_data, None)
         self.assertIs(field.raw_data, schema.pre_processor.return_value)
         self.assertIs(field.error, None)
@@ -46,7 +46,7 @@ class TestBoundFieldCreation(unittest.TestCase):
         self.assertEqual(len(list(field)), 1)
         self.assertIs(field[0].schema, schema.child)
         self.assertEqual(field[0].full_name, ":0")
-        self.assertEqual(field[0]._name, 0)
+        self.assertEqual(field[0].name, 0)
         self.assertEqual(field[0].clean_data, None)
         self.assertEqual(field[0].raw_data, None)
         self.assertEqual(field[0].error, None)
@@ -58,7 +58,7 @@ class TestBoundFieldCreation(unittest.TestCase):
         for i, subfield in enumerate(field):
                 self.assertIs(subfield.schema, schema.child)
                 self.assertEqual(subfield.full_name, ":%d" % i)
-                self.assertEqual(subfield._name, i)
+                self.assertEqual(subfield.name, i)
                 self.assertEqual(subfield.clean_data, None)
                 self.assertEqual(subfield.raw_data, i)
                 self.assertEqual(subfield.error, None)
@@ -73,7 +73,7 @@ class TestBoundFieldCreation(unittest.TestCase):
         for key in ('key1', 'key2'):
                 self.assertIs(field[key].schema, schema[key])
                 self.assertEqual(field[key].full_name, "%s" % key)
-                self.assertEqual(field[key]._name, key)
+                self.assertEqual(field[key].name, key)
                 self.assertEqual(field[key].clean_data, None)
                 self.assertEqual(field[key].raw_data, None)
                 self.assertEqual(field[key].error, None)
@@ -88,14 +88,14 @@ class TestBoundFieldCreation(unittest.TestCase):
         key = 'key1'
         self.assertIs(field[key].schema, schema[key])
         self.assertEqual(field[key].full_name, "%s" % key)
-        self.assertEqual(field[key]._name, key)
+        self.assertEqual(field[key].name, key)
         self.assertEqual(field[key].clean_data, None)
         self.assertEqual(field[key].raw_data, 1)
         self.assertEqual(field[key].error, None)
         key = 'key2'
         self.assertIs(field[key].schema, schema[key])
         self.assertEqual(field[key].full_name, "%s" % key)
-        self.assertEqual(field[key]._name, key)
+        self.assertEqual(field[key].name, key)
         self.assertEqual(field[key].clean_data, None)
         self.assertEqual(field[key].raw_data, None)
         self.assertEqual(field[key].error, None)
@@ -168,11 +168,11 @@ class TestBoundFieldBehavior(unittest.TestCase):
         field = mock.MagicMock(autospec=fforms.fields.BoundField,
                                clean_data=None)
         child1 = mock.MagicMock(autospec=fforms.fields.BoundField,
-                                _name="key1",
                                 clean_data=None)
+        child1.name = "key1"
         child2 = mock.MagicMock(autospec=fforms.fields.BoundField,
-                                _name="key2",
                                 clean_data=None)
+        child2.name = "key2"
         field.__iter__.return_value = (child1, child2)
 
         data = {'key1': "data1",
@@ -192,11 +192,11 @@ class TestBoundFieldBehavior(unittest.TestCase):
                                error=None,
                                clean_data=None)
         child1 = mock.MagicMock(autospec=fforms.fields.BoundField,
-                                _name=0,
                                 clean_data=None)
+        child1.name = 0
         child2 = mock.MagicMock(autospec=fforms.fields.BoundField,
-                                _name=1,
                                 clean_data=None)
+        child2.name = 1
         child1._propagate_validation.side_effect = lambda x: x
         child2._propagate_validation.side_effect = lambda x: x
         field.__iter__.return_value = (child1, child2)
