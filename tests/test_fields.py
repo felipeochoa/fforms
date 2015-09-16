@@ -210,6 +210,11 @@ class TestBoundFieldBehavior(unittest.TestCase):
         child1._propagate_validation.assert_called_once_with(data[0])
         child2._propagate_validation.assert_called_once_with(data[1])
 
+    def test_propagate_none(self):
+        self.assertTrue(self.leaf_field._propagate_validation(None))
+        self.assertFalse(self.leaf_field._propagate_validation(
+            fforms.validators.ValidationError("Error", None)))
+
     def test_iter(self):
         fields = [
             (self.map_field, 2),
