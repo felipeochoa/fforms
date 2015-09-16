@@ -171,7 +171,7 @@ Which will print out::
     password2 '123ABCdef!@#' (None)
     tags [{'name': 'tag1'}, {'name': 'tag2'}] (None)
     address None ()
-    email 'me@example' (None)
+    email 'me@example' (Enter a valid email address.)
 
 (address does not have an error message of its own; all the errors are
 in its children).
