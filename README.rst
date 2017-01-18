@@ -16,9 +16,8 @@ Installation
 ------------
 
 ``fforms`` is a pure Python package with no dependencies, so
-installing it should be very straightforward. I develop and test on
-3.4, and soon I'll be adding 3.5 as well. Python 3.3 should work 99%
-correctly. [#3.3]_
+installing it should be very straightforward. It's tested on Python
+3.3 through 3.6.[#3.3]_
 
 1. **Option A**: ``pip install fforms``
 2. **Option B**: download the source code, change into the working
@@ -326,5 +325,5 @@ by passed to other parts of your application.
 .. |Coverage Status| image:: https://coveralls.io/repos/felipeochoa/fforms/badge.svg
    :target: https://coveralls.io/r/felipeochoa/fforms
 
-.. [#3.3] Unless you run into email addresses using IPv6 domain names
-          on Windows.
+.. [#3.3] On Python 3.3 on Windows, the email validator won't work
+          with addresses using IPv6 domain names.
