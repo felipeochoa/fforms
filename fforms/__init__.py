@@ -2,6 +2,7 @@
 from .fields import BoundField
 from .schema import make_from_literal
 
+import re  # for expand_dots
 
 def expand_dots(base_dict):
     """
@@ -88,7 +89,6 @@ def expand_dots(base_dict):
     ValueError: 'head' specified as both dict and list
 
     """
-    import re
     if not base_dict:
         return {}
     new_dict = {}
