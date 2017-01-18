@@ -91,12 +91,34 @@ def expand_dots(base_dict):
     """
     if not base_dict:
         return {}
-    new_dict = {}
+    final_dict = {}
+    args = [(base_dict, final_dict)]
+    needs_conversion = []
+    while args:
+        base, into = args.pop()
+        singles, dicts, lists = _expand_dots_1(base)
+        into.update(singles)
+        for key, val in dicts.items():
+            into[key] = {}
+            args.append((val, into[key]))
+        for head, subdict in lists.items():
+            into[head] = {}
+            args.append((subdict, into[head]))
+            needs_conversion.append((into, head))
+    for parent, key in needs_conversion:
+        parent[key] = [val for _, val in
+                       sorted(parent[key].items(), key=lambda x: int(x[0]))]
+    return final_dict
+
+
+def _expand_dots_1(base_dict):
+    "Expand a single layer of dots and colons."
     singles = {}
+    dicts = {}
     lists = {}
     for key, val in base_dict.items():
         if '.' not in key and ':' not in key:
-            if key in new_dict or key in lists:
+            if key in dicts or key in lists:
                 raise ValueError("%r specified as both naked and parent key" %
                                  key)
             singles[key] = val
@@ -108,20 +130,12 @@ def expand_dots(base_dict):
         if kind == '.':
             if head in lists:
                 raise ValueError("%r specified as both dict and list" % head)
-            new_dict.setdefault(head, {})[tail] = val
+            dicts.setdefault(head, {})[tail] = val
         else:
-            if head in new_dict:
+            if head in dicts:
                 raise ValueError("%r specified as both dict and list" % head)
             lists.setdefault(head, {})[tail] = val
-
-    final_dict = {key: expand_dots(val) for key, val in new_dict.items()}
-    for head, subdict in lists.items():
-        final_dict[head] = [val for _, val in
-                            sorted(expand_dots(subdict).items(),
-                                   key=lambda x: int(x[0]))]
-
-    final_dict.update(singles)
-    return final_dict
+    return singles, dicts, lists
 
 
 def bind_dotted(schema, data, data2=None):
