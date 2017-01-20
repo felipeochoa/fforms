@@ -55,6 +55,20 @@ def expand_dots(base_dict):
       ...
     ValueError: invalid literal for int() with base 10: 'a'
 
+    The deserialization is not recursive, so won't choke on deeply-
+    nested structures:
+    >>> val = expand_dots({'a.' * 10000 + 'a': 1, 'b' + ':0' * 10000: 'a'})
+    >>> val_a = val['a']
+    >>> for _ in range(10000): val_a = val_a['a']
+    ...
+    >>> val_a
+    1
+    >>> val_b = val['b']
+    >>> for _ in range(10000): val_b = val_b[0]
+    ...
+    >>> val_b
+    'a'
+
     >>> expand_dots({'parent': 'child'})
     {'parent': 'child'}
     >>> expand_dots({'parent.a': 'A', 'parent:1': 1})
