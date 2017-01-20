@@ -33,7 +33,7 @@ def expand_dots(base_dict):
     >>> expand_dots({'parent:0': 'a', 'parent:1': 'b'})
     {'parent': ['a', 'b']}
 
-    The actual indeces of the items are only used for sorting, so gaps are
+    The actual indices of the items are only used for sorting, so gaps are
     allowed:
 
     >>> expand_dots({'parent:5': 'a', 'parent:7': 'b'})
@@ -45,7 +45,7 @@ def expand_dots(base_dict):
     ...   == {'parent': [{'a': 'A', 'b': 'B'}, 1]})
     True
 
-    List indeces must be integers, though:
+    List indices must be integers, though:
     >>> expand_dots({'parent:a': 'A'})
     Traceback (most recent call last):
       ...
