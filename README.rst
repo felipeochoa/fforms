@@ -17,7 +17,7 @@ Installation
 
 ``fforms`` is a pure Python package with no dependencies, so
 installing it should be very straightforward. It's tested on Python
-3.3 through 3.6.[#3.3]_
+3.3 through 3.6. [#3.3]_
 
 1. **Option A**: ``pip install fforms``
 2. **Option B**: download the source code, change into the working
