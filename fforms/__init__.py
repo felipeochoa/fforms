@@ -44,6 +44,10 @@ def expand_dots(base_dict):
     >>> (expand_dots({'parent:0.a': 'A', 'parent:0.b': 'B', 'parent:1': 1})
     ...   == {'parent': [{'a': 'A', 'b': 'B'}, 1]})
     True
+    >>> expand_dots({'b:0:0': 'a'})
+    {'b': [['a']]}
+    >>> expand_dots({'b:0:0.a.0:0:0.c:0.d:0': 'a'})['b'][0][0]['a']['0'][0][0]['c'][0]['d'][0]
+    'a'
 
     List indices must be integers, though:
     >>> expand_dots({'parent:a': 'A'})
@@ -105,7 +109,7 @@ def expand_dots(base_dict):
             into[head] = {}
             args.append((subdict, into[head]))
             needs_conversion.append((into, head))
-    for parent, key in needs_conversion:
+    for parent, key in reversed(needs_conversion):
         parent[key] = [val for _, val in
                        sorted(parent[key].items(), key=lambda x: int(x[0]))]
     return final_dict
