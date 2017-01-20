@@ -5,7 +5,7 @@ README = path.join(path.dirname(path.abspath(__file__)), "README.rst")
 
 setup(
     name="fforms",
-    version="1.0",
+    version="1.1",
     description=("Standalone HTML form validation library"),
     long_description=open(README).read(),
     author="Felipe Ochoa",
@@ -13,7 +13,7 @@ setup(
     url="https://github.com/felipeochoa/fforms",
     license="MIT",
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3 :: Only',
