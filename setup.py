@@ -9,7 +9,7 @@ setup(
     description=("Standalone HTML form validation library"),
     long_description=open(README).read(),
     author="Felipe Ochoa",
-    author_email="find me through Github",
+    author_email="felipeochoa@find-me-on-github.com",
     url="https://github.com/felipeochoa/fforms",
     license="MIT",
     classifiers=[
