@@ -1,8 +1,10 @@
 
 from .fields import BoundField
-from .schema import make_from_literal
+from .cache import weak_cache
+
 
 import re  # for expand_dots
+
 
 def expand_dots(base_dict):
     """
@@ -154,6 +156,11 @@ def _expand_dots_1(base_dict):
                 raise ValueError("%r specified as both dict and list" % head)
             lists.setdefault(head, {})[tail] = val
     return singles, dicts, lists
+
+
+def make_cached_expand_dots():
+    "Return a version of expand_dots that uses a weak_cache."
+    return weak_cache(expand_dots)
 
 
 def bind_dotted(schema, data, data2=None):
